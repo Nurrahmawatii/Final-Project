@@ -21,7 +21,7 @@ image = Image.open('./PIP_consultant.png')
 window1 = st.sidebar.container()
 window1.image(image)
 
-st.markdown("<h3 style='text-align: center; color: black;'>Apple Stock Analysis</h3>", unsafe_allow_html=True)
+st.markdown("<h3 style='text-align: center;'>Apple Stock Analysis</h3>", unsafe_allow_html=True)
 
 # ------ layout setting---------------------------
 window_selection_c = st.sidebar.container() # create an empty container in the sidebar
@@ -48,28 +48,23 @@ stock = Stock(symbol=SYMB)
 df = stock.load_data(START, END, inplace=True)
 fig = make_subplots(rows=2, cols=1, shared_xaxes=True, row_width=[0.3, 1])
 
-option = st.sidebar.radio('Option', ['Stock Return', 'Close Price', 'Shares Traded'])
+option = st.sidebar.radio('Option', ['Stock Return', 'Shares Traded'])
 
 if option=='Stock Return':
         
     stock.plot_raw_data_1(fig)
     st.plotly_chart(fig)
 
-if option=='Close Price':
+if option=='Shares Traded':
         
     stock.plot_raw_data_2(fig)
     st.plotly_chart(fig)
 
-if option=='Shares Traded':
-        
-    stock.plot_raw_data_3(fig)
-    st.plotly_chart(fig)
 
-
-tab1, tab2 = st.tabs(["Forecast With Twitter Sentiment", "Forcast Without Twitter Sentiment"])
+tab2, tab1 = st.columns(["Forcast Without Twitter Sentiment", "Forecast With Twitter Sentiment"])
 
 with tab1:
-    st.markdown("<h4 style='text-align: center; color: black;'>Forecast With Twitter Sentiment</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='text-align: center;'>Forecast With Twitter Sentiment</h4>", unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -95,20 +90,22 @@ with tab1:
     submit_2 = st.button('Predict')
     if submit_2:
         st.write("Today")
-        st.write(df_predict)
+        st.write(df_predict.drop(columns=['pos', 'neg', 'neutral']))
         model_linreg = pickle.load(open('./preprocess.pkl', 'rb'))
         pred = float(np.round(model_linreg.predict(df_predict), 3))
         
-        st.write(f"Tomorrow Close Price $ {pred}")
+        st.write(f"Tomorrow Close Price : $ {pred}")
+
+    
 
 with tab2:
     def data_upload():
-        df_1 = pd.read_csv('./data/data_forecast_arima.csv')
+        df_1 = pd.read_csv('./data_forecast_arima.csv')
         df_1 = df_1.drop(columns='Unnamed: 0')
         return df_1
 
     df_arima = data_upload()
-    st.markdown("<h4 style='text-align: center; color: black;'>Forecast Without Twitter Sentiment</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='text-align: center;'>Forecast Without Twitter Sentiment</h4>", unsafe_allow_html=True)
 
     fig = go.Figure(
         data = go.Scatter(
@@ -120,4 +117,6 @@ with tab2:
     st.write("Forecast Result")
     gd = GridOptionsBuilder.from_dataframe(df_arima)
     gd.configure_pagination(enabled=True)
-    AgGrid(df_arima, gridOptions=gd.build(), height=250)
+    gridoption = gd.build()
+    AgGrid(df_arima, gridOptions=gridoption, height=250, reload_data=True)
+    

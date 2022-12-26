@@ -73,7 +73,7 @@ class Stock:
         temp = dict(layout=go.Layout(font=dict(family="Franklin Gothic", size=12)))
             
                 
-        fig.add_trace(go.Candlestick(x=df_date, open=open_avg, high=high_avg, low=low_avg, close=close_avg, showlegend=False), row=1, col=1)
+        fig.add_trace(go.Candlestick(x=df_date, open=open_avg, high=high_avg, low=low_avg, close=close_avg, name=self.symbol,showlegend=False), row=1, col=1)
         fig.add_trace(go.Scatter(x=df_date, y=MA_50, marker_color='grey', name='MA50', showlegend=True), row=1, col=1)
         fig.add_trace(go.Scatter(x=df_date, y=MA_200, marker_color='lightblue', name='MA200', showlegend=True), row=1, col=1)
         fig.add_trace(go.Scatter(x=df_date, y=returns, mode='lines', name='Return', showlegend=False, marker_color=colors[3]), row=2, col=1)
@@ -93,41 +93,8 @@ class Stock:
                         )
         return fig
 
+
     def plot_raw_data_2(self, fig):
-        df_date=self.data.Date.unique()
-        returns=self.data.groupby('Date')['Return'].mean().mul(100).rename('Average Return')
-        vol_avg=self.data.groupby('Date')['Volume'].mean()
-        close_avg=self.data.groupby('Date')['Close'].mean().rename('Closing Price')
-        open_avg=self.data.groupby('Date')['Open'].mean()
-        high_avg=self.data.groupby('Date')['High'].mean()
-        low_avg=self.data.groupby('Date')['Low'].mean()
-        MA_50 = self.data.groupby('Date')['MA50'].mean()
-        MA_200 = self.data.groupby('Date')['MA200'].mean()
-        colors=px.colors.qualitative.Plotly
-        temp = dict(layout=go.Layout(font=dict(family="Franklin Gothic", size=12)))
-            
-                
-        fig.add_trace(go.Candlestick(x=df_date, open=open_avg, high=high_avg, low=low_avg, close=close_avg, showlegend=False), row=1, col=1)
-        fig.add_trace(go.Scatter(x=df_date, y=MA_50, marker_color='grey', name='MA50', showlegend=True), row=1, col=1)
-        fig.add_trace(go.Scatter(x=df_date, y=MA_200, marker_color='lightblue', name='MA200', showlegend=True), row=1, col=1)
-        fig.add_trace(go.Scatter(x=df_date, y=close_avg, mode='lines', name='Close', showlegend=False, marker_color=colors[4]), row=2, col=1)    
-        fig.update_xaxes(rangeslider_visible=False,
-                        rangeselector=dict(
-                            buttons=list([
-                                dict(count=1, label="1M", step="month", stepmode="backward"),
-                                dict(count=3, label="3M", step="month", stepmode="backward"),
-                                dict(count=6, label="6M", step="month", stepmode="backward"),
-                                dict(count=1, label="1Y", step="year", stepmode="backward"),
-                                dict(count=2, label="2Y", step="year", stepmode="backward"),
-                                dict(step="all")]), y=1, x=.01), row=1,col=1)
-                
-        fig.update_layout(template=temp, title='Apple Stock', hovermode='x unified', 
-                            yaxis1=dict(title='Stock Price'), yaxis2_title='Closing Price'
-                        )
-        return fig
-
-
-    def plot_raw_data_3(self, fig):
         df_date=self.data.Date.unique()
         returns=self.data.groupby('Date')['Return'].mean().mul(100).rename('Average Return')
         vol_avg=self.data.groupby('Date')['Volume'].mean()
@@ -141,7 +108,7 @@ class Stock:
         temp = dict(layout=go.Layout(font=dict(family="Franklin Gothic", size=12)))
                 
                     
-        fig.add_trace(go.Candlestick(x=df_date, open=open_avg, high=high_avg, low=low_avg, close=close_avg, showlegend=False), row=1, col=1)
+        fig.add_trace(go.Candlestick(x=df_date, open=open_avg, high=high_avg, low=low_avg, close=close_avg, name=self.symbol,showlegend=False), row=1, col=1)
         fig.add_trace(go.Scatter(x=df_date, y=MA_50, marker_color='grey', name='MA50', showlegend=True), row=1, col=1)
         fig.add_trace(go.Scatter(x=df_date, y=MA_200, marker_color='lightblue', name='MA200', showlegend=True), row=1, col=1)        
         fig.add_trace(go.Scatter(x=df_date, y=vol_avg, mode='lines', name='Volume', showlegend=False, marker_color=colors[5]), row=2, col=1)
